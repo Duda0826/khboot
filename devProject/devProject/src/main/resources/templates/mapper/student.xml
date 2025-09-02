@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boot.example.mapper.StudentMapper">
+<!--    <resultMap id="studentResult" type="com.boot.example.domain.Student">-->
+<!--        <id column="no" property="no" />-->
+<!--        <result column="SD_NUM" property="sdNum" />-->
+<!--        <result column="SD_NAME" property="sdName" />-->
+<!--        <result column="SD_ID" property="sdId"/>-->
+<!--        <result column="SD_PASSWD" property="sdPasswd" />-->
+<!--        <result column="S_NUM" property="sNum" />-->
+<!--        <result column="SD_BIRTH" property="sdBirth" />-->
+<!--        <result column="SD_PHONE" property="sdPhone" />-->
+<!--        <result column="SD_ADDRESS" property="sdAddress" />-->
+<!--        <result column="SD_EMAIL" property="sdEmail" />-->
+<!--        <result column="SD_DATE" property="sdDate" />-->
+<!--    </resultMap>-->
+
+<!--    <select id="studentList" resultMap="studentResult">-->
+<!--        SELECT-->
+<!--            no, sd_num, sd_name, sd_id, sd_passwd, s_num, sd_birth, sd_phone, sd_address, sd_email, sd_date-->
+<!--        FROM student-->
+<!--        ORDER BY no-->
+<!--    </select>-->
+</mapper>

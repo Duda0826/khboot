@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" >
+    <title>test 문서 내용</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Thymeleaf를 사용하는 방법은 4가지가 있다.
+       변수 표현식 ${ }, 메시지 표현식 #{ }, 선택 변수 표현식 *{ }, 링크 표현식 @{ }이 있다. -->
+        <div class="pricing-header p-3 pd-md-4 mx-auto text-center">
+            <h1 class="display-4 fw-normal text-body-emphasis">Thymeleaf 예제</h1>
+        </div>
+        <!-- 타임리프엔진에서는 th를 사용한다. -->
+        <!-- th:text는 텍스트를 출력한다는 속성으로서 th:text="${속성}을 입력하면 해당 속성의 값이
+              text로 출력이 된다는 것이다. -->
+        <!-- th:utext는 html태그가 있다면 태그값을 반영해서 표시-->
+        <!-- th:value는 엘리먼트들의 value값을 지정할 수 있다. <button th:value="${hello}" />-->
+        <!-- th:with는 변수 값을 지정해서 사용할 수 있다. <div th:with="temp=${hello}" th:text="${temp}"> -->
+
+        <div>
+            <label>th:text는 텍스트를 출력한다는 속성</label>
+            <!-- 방법 1: th: text -->
+            <p th:text="${data1}"></p>
+            <!-- 방법 2: 대괄호 표현식 (inline) -->
+            <p>[[${data1}]]</p>
+        </div>
+
+        <div>
+            <label>th:utext는 html태그가 있다면 태그값을 반영해서 표시</label>
+            <!-- 방법 1: th:utext -->
+            <p th:utext="${data2}"></p>
+            <!-- 방법 2: [[...]]의 unescaped 버전 -->
+            <p>[(${data2})]</p>
+        </div>
+
+        <!--/* 한 줄 주석 */-->
+
+        <!--/*--> 여러 줄 주석
+        <p>[(${data2})]</p>
+        <!--*/-->
+
+        <!-- 소스 코드상에서 고정된 값을 리터럴이라 한다. -->
+        <div>
+        <label>리터럴</label>
+        <p th:text="'text'"></p>
+        <p th:text="text"></p>
+        <p th:text="'hello world'"></p><!--문자열에 공백이 포함되어 있으면 ''으로 명시-->
+
+        <p th:text="'이번 한주도 ' + ' fighting~~'"></p>
+        <p th:text="'출력 : ' + ${data1}|"></p>
+        <!-- ||기호(파이프 두 개)를 사용하는 방식은 Thymeleaf의 Literal Substitution(리터럴 대체) 가능 -->
+        <p th:text="|출력 : ${data1}|"></p>
+        </div>
+
+        <!-- if와 if else -->
+        <p th:if="${number > 5}">5보다 크다</p>
+        <p th:unless="${number > 5}">5보다 작다</p>
+
+        <!-- Thymeleaf에서는 내부적으로 다양한 유틸리티 객체를 제공한다.
+           그 중 하나가 Strings 클래스이며, ${#strings}로 접근할 수 있다.
+           #strings.isEmpty을 사용하여 문자열이 null이거나 빈 문자열("")인지 검사.
+           조건에 해당되면 true, 아니면 false -->
+        <p th:if="${#strings.isEmpty(data)}">데이터가 존재하지 않습니다.</p>
+        <p th:unless="${#strings.isEmpty(data)}" th:text="${data}"></p>
+
+        <!-- th:switch에서 th:case문으로 조건절 부여, *로 case 문에서 다루지 않은 모든 경우가 처리된다. -->
+        <p th:switch="${auth}">
+            <span th:case="user">사용자</span>
+            <span th:case="admin">관리자</span>
+            <span th:case="*">구분자 없음</span>
+        </p>
+
+        <!-- Object 접근 방법 -data.field / data['field'] / data.getField() -->
+        <div>exampleDTO 필드 출력 -1
+            <ul>
+                <li>이름: <span th:text="${exampleDTO.name}" ></span></li>
+                <li>나이: <span th:text="${exampleDTO.getAge()}"></span></li>
+                <li>이메일: <span th:text="${exampleDTO.email}"></span></li>
+            </ul>
+        </div>
+
+        <div>exampleDTO 필드 출력 -2
+            <ul th:object="${exampleDTO}">
+                <li>이름: <span th:text="*{name}"></span></li>
+                <li>나이: <span th:text="*{age}"></span></li>
+                <li>이메일: <span th:text="*{email}"></span></li>
+            </ul>
+        </div>
+
+        <div>단순 데이터 반복
+            <!-- 반복 th:each 사용. th:each="변수 : ${#numbers.sequence(시작값, 종료값)}" -->
+            <!-- #numbers.sequence을 사용하여 먼저 원하는 반복 횟수 만큼의 배열을 생성 -->
+            <table>
+                <tr>
+                    <td>번호</td>
+                </tr>
+                <tr th:each="number : ${#numbers.sequence(1,5)}">
+                    <td th:text="${number}"></td>
+                </tr>
+            </table>
+
+            <!-- 반복 th:each사용. th:each="원소를 저장할 대상: ${반복할 리스트} -->
+            <table class="table table-striped">
+                <tr>
+                    <td>이름</td>
+                    <td>나이</td>
+                    <td>이메일</td>
+                </tr>
+                <tr th:each="example : ${list}">
+                    <td th:text="${example.name}"></td>
+                    <td th:text="${example.age}"></td>
+                    <td th:text="${example.email}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- th:each="원소를 저장할 대상 : ${반복할 리스트}" th:object="${원소를 저장할 대상}" -->
+        <!-- *{원소를 저장할 대상의 프로퍼티} ${상태 정보} -->
+        <!-- 반복 상태 정보는 원소를 저장할 대상 + Stat로 명시 -->
+        <div>th:object
+            <table class="table table-bordered">
+                <tr><td>번호</td><td>이름</td><td>나이</td><td>이메일</td></tr>
+                <tr th:each="example : ${list}" th:object="${example}">
+                    <td th:text="${exampleStat.count}"></td>
+                    <td th:text="*{name}"></td>
+                    <td th:text="*{age}"></td>
+                    <td th:text="*{email}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>Map 타입
+            <table class="table table-bordered">
+                <tr><td>이름</td><td>나이</td><td>이메일</td></tr>
+                    <tr><!-- 객체이면 map[키].프로퍼티 -->
+                    <td th:text="${map[1].name}"></td>
+                    <td th:text="${map[1].age}"></td>
+                    <td th:text="${map[1].email}"></td>
+                </tr>
+                <tr>
+                    <td th:text="${map[2].name}"></td>
+                    <td th:text="${map[2].age}"></td>
+                    <td th:text="${map[2].email}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <ul>
+                <li>default = <span th:text="${localDateTime}"></span> </li>
+                <li>yyyy-MM-dd HH:mm:ss =
+                    <span th:text="${#temporals.format(localDateTime, 'yyyy-MM-dd HH:mm:ss')}"></span></li>
+                <li>yyyy-MM-dd a hh:mm =
+                    <span th:text="${#temporals.format(localDateTime, 'yyyy-MM-dd a hh:mm')}"></span></li>
+            </ul>
+        </div>
+
+        <!-- 타임리프에서 URL을 생성할 때는 @{...} 문법을 사용하면 된다. -->
+        <!-- 단순한 URL 표현 @{/hello} : /hello -->
+        <!-- 쿼리 파라미터를 포함하는 URL 표현 @{/hello(param1=value1, param2=value2)} : /hello?param1:value1&param2:value2 -->
+        <div>
+            <ul>
+                <li><a th:href="@{/example/exam01}">basic url(/exam01 요청)</a> </li>
+                <li><a th:href="@{/example/exam02}">basic url(/exam02 요청)</a></li>
+                <li><a th:href="@{/example/exam02(language=java, word=fighting)}">example query param</a> </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

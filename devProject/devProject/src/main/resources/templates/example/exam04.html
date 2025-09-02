@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>문서 내용</title>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center"><h3>폼 데이터 출력하기</h3></div>
+
+        <div th:text="${dto.name}"></div>
+        <div th:text="${dto.age}"></div>
+
+        <!--/*-->
+        <div th:text="${sampleDTO.name}"></div>
+        <div th:text="${sampleDTO.age}"></div>
+        <!--*/-->
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boot.example.mapper.BookMapper">
+    <resultMap id="bookResult" type="com.boot.example.domain.Book">
+        <id column="book_id" property="bookId" />
+        <result column="title" property="title" />
+        <result column="author" property="author" />
+        <result column="publisher" property="publisher" />
+        <result column="publish_date" property="publishDate" />
+        <result column="price" property="price" />
+    </resultMap>
+
+    <select id="bookList" resultMap="bookResult">
+        SELECT
+        book_id, title, author, publisher, publish_date, price
+        FROM book
+        ORDER BY book_id desc
+    </select>
+
+    <insert id="bookInsert" parameterType="com.boot.example.domain.Book">
+        INSERT INTO book (title, author, publisher, publish_date, price)
+        VALUES (#{title}, #{author}, #{publisher}, #{publishDate}, #{price})
+    </insert>
+
+    <update id="bookUpdate" parameterType="com.boot.example.domain.Book">
+        UPDATE book SET
+            title = #{title}, author = #{author}, publisher = #{publisher},
+            publish_date = #{publishDate}, price = #{price}
+        WHERE book_id = #{bookId}
+    </update>
+
+    <delete id="bookDelete" parameterType="com.boot.example.domain.Book">
+        DELETE FROM book WHERE book_id = #{bookId}
+    </delete>
+</mapper>

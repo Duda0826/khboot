@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="container">
+        <div class="text-center"><h3>페이지 이동</h3></div>
+
+        <div th:if="${#strings.isEmpty(language) || #strings.isEmpty(word)}">
+            <p>해당 파라미터가 존재하지 않습니다.</p>
+        </div>
+
+        <div th:if="${not #strings.isEmpty(language) || #strings.isEmpty(word)}">
+            <p th:text="${language}"></p>
+            <p th:text="${word}"></p>
+        </div>
+    </div>
+</body>
+</html>
