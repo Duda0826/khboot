@@ -35,8 +35,4 @@ public class StudentServiceImpl implements StudentService{
         studentMapper.studentInsert(student);
     }
 
-    @Override
-    public int studentDelete(Student student){
-        studentMapper.studentDelete(student);
-    }
 }

@@ -54,9 +54,4 @@ public interface StudentMapper {
                    #{student.subject.subjectNumber}, #{student.studentBirth}, #{student.studentPhone}, #{student.studentAddress}, #{student.studentEmail})
     """)
     public int studentInsert(@Param("student") Student student);
-
-    @Delete("""
-            DELETE FROM student
-            where 
-            """)
 }

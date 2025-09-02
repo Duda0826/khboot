@@ -9,5 +9,4 @@ public interface StudentService {
     public String studentAutoNumber(String subjectNumber);
     public String studentIdCheck(String studentId);
     public void studentInsert(Student student);
-    public int studentDelete(Student student);
 }
