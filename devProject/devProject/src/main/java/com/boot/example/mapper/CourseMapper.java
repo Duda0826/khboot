@@ -18,5 +18,5 @@ public interface CourseMapper {
             @Result(column = "c_section", property = "cSection"),
     })
     @Select("SELECT no, c_num, c_name, c_credit, c_section FROM course ORDER BY no")
-    public List<Course> courseList();
+    List<Course> courseList();
 }

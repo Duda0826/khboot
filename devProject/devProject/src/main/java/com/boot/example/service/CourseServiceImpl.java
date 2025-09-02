@@ -13,7 +13,7 @@ public class CourseServiceImpl implements CourseService{
     private final CourseMapper courseMapper;
 
     @Override
-    public List<Course> courList() {
+    public List<Course> courseList() {
         List<Course> courseList = courseMapper.courseList();
         return courseList;
     }

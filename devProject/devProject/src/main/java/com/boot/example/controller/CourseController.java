@@ -18,8 +18,8 @@ public class CourseController {
 
     @GetMapping("/courseAllList")
     @ResponseBody
-    public List<Course> courseList() {
-    List<Course> courseAllList = courseService.courList();
-    return courseAllList;
+    public List<Course> courseList(){
+        List<Course> courseAllList = courseService.courseList();
+        return courseAllList;
     }
 }
