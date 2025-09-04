@@ -25,7 +25,8 @@
             <th:block th:if="${not #strings.isEmpty(boardList)}">
                 <tr class="text-center" th:each="board : ${boardList}" th:object="${board}"  th:data-no="*{no}">
                     <td th:text="*{no}"></td>
-                    <td class="text-start goDetail" th:text="*{title}"></td>
+<!--                    <td class="text-start goDetail" th:text="*{title}"></td>-->
+                    <td><a th:href="@{/board/{no}(no=${board.no})}" th:text="*{title}" class="goDetail link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"></a></td>
                     <td class="name" th:text="*{name}"></td>
                     <td class="date" th:text="*{#temporals.format(regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td th:text="*{hit}"></td>

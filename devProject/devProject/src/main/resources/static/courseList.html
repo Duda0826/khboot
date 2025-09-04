@@ -5,66 +5,69 @@
   <title>과목 정보 조회</title>
 </head>
 <body>
-  <button type="button" id="courseAllListBtn">과목 정보 조회</button>
-  <section>>
-        <table>
-          <thead>
-          <tr>
-            <th>번호</th>
-            <th>과목번호</th>
-            <th>과목명</th>
-            <th>학점</th>
-            <th>구분</th
-      </tr>
-      </thead>
-      <tbody id="courseList">
+<button type="button" id="courseAllListBtn">과목 정보 조회</button>
+<section>>
+  <table>
+    <thead>
+    <tr>
+      <th>번호</th>
+      <th>과목번호</th>
+      <th>과목명</th>
+      <th>학점</th>
+      <th>구분</th
+    </tr>
+    </thead>
+    <tbody id="courseList">
 
-      </tbody>
-    </table>
-  </section>
+    </tbody>
+  </table>
+</section>
 
-  <script>
-    document.getElementById("courseAllListBtn").addEventListener("click", () => {
-      fetch("/course/courseAllList")
-      .then(response => response.json())
-      .then(data => {
-      let subjectList = document.getElementById("courseList");
-      courseList.innerHTML = "";
+<script>
+  document.getElementById("courseAllListBtn").addEventListener("click", () => {
+    // fetch 요청을 보낼 매핑
+    fetch("/course/courseAllList")
+    // 응답을 json 형태로 받겠다 명시
+    .then(response => response.json())
+    // 요청을 보내서 받아온 data courseList에 담는 과정
+    .then(data => {
+    let courseList = document.getElementById("courseList");
+    courseList.innerHTML = "";
 
-      if(data.length === 0) {
-        courseList.innerHTML = "<tr><td colspan = '5'>등록된 과목 정보가 존재하지 않습니다. </td></tr>"
-      }else{
-        data.forEach((course) => {
-          const tr = document.createElement("tr");
+    if(data.length === 0) {
+      courseList.innerHTML = "<tr><td colspan = '5'>등록된 과목 정보가 존재하지 않습니다. </td></tr>"
+    }else{
+      data.forEach((course) => {
+        const tr = document.createElement("tr");
 
-          const tdNo = document.createElement("td");
-          tdNo.textContent = course.no;
+        const tdNo = document.createElement("td");
+        tdNo.textContent = course.no;
 
-          const tdNum = document.createElement("td");
-          tdNum.textContent = course.cnum;
+        const tdNum = document.createElement("td");
+        tdNum.textContent = course.cnum;
 
-          const tdName = document.createElement("td");
-          tdName.textContent = course.cname;
+        const tdName = document.createElement("td");
+        tdName.textContent = course.cname;
 
-          const tdCredit = document.createElement("td");
-          tdCredit.textContent = course.ccredit;
+        const tdCredit = document.createElement("td");
+        tdCredit.textContent = course.ccredit;
 
-          const tdSection = document.createElement("td");
-          tdSection.textContent = course.csection;
+        const tdSection = document.createElement("td");
+        tdSection.textContent = course.csection;
 
-          tr.appendChild(tdNo);
-          tr.appendChild(tdNum);
-          tr.appendChild(tdName);
-          tr.appendChild(tdCredit);
-          tr.appendChild(tdSection);
+        tr.appendChild(tdNo);
+        tr.appendChild(tdNum);
+        tr.appendChild(tdName);
+        tr.appendChild(tdCredit);
+        tr.appendChild(tdSection);
 
-          courseList.appendChild(tr);
-        })
-      }
+        courseList.appendChild(tr);
       })
-      .catch(error => console.error("Error", error));
-    });
+    }
+    })
+    .catch(error => console.error("Error", error));
+  });
 
-  </script>
+</script>
 </body>
 </html>
