@@ -1,11 +1,14 @@
 package com.spring.client.board.service;
 
 import com.spring.client.board.domain.Board;
+import com.spring.common.dto.PageRequestDTO;
+import com.spring.common.dto.PageResponseDTO;
 
 import java.util.List;
 
 public interface BoardService {
     public List<Board> boardList(Board board);
+    public PageResponseDTO<Board> list(PageRequestDTO pageRequestDTO);
     public void boardInsert(Board board);
     public Board getBoard(Long no);
     public Board boardHitUpdate(Board board);
