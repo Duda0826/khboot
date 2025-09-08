@@ -32,7 +32,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Page<Board> findAll(Pageable pageable);
 
     Page<Board> findByTitleContaining(String keyword, Pageable pageable);
+    Page<Board> findByNameContaining(String name, Pageable pageable);
+    Page<Board> findByContentContaining(String content, Pageable pageable);
 
+    Page<Board> findByRegDateBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
     /* JPQL 적용
      * JPA 에서 사용하는 객체지향 쿼리 언어이다.
