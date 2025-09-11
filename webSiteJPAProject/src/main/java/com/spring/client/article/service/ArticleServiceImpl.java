@@ -1,7 +1,10 @@
 package com.spring.client.article.service;
 
+
 import com.spring.client.article.domain.Article;
 import com.spring.client.article.repository.ArticleRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,26 +14,53 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ArticleServiceImpl implements ArticleService {
-
     private final ArticleRepository articleRepository;
 
     @Override
-    public Article saveArticle(Article article) {
-        return articleRepository.save(article);
+    public List<Article> articleList(Article article) {
+        List<Article> articleList = articleRepository.findAll();
+        return articleList;
     }
 
     @Override
-    public Optional<Article> getArticleById(Long id) {
-        return articleRepository.findById(id);
+    public void articleInsert(Article article) {
+        articleRepository.save(article);
     }
 
     @Override
-    public List<Article> getAllArticles() {
-        return articleRepository.findAll();
+    public Article getArticle(Long no) {
+        return articleRepository.findById(no).orElseThrow(() -> new EntityNotFoundException("게시글이 존재하지 않습니다."));
     }
 
     @Override
-    public void deleteArticle(Long id) {
-        articleRepository.deleteById(id);
+    @Transactional
+    public Article articleHitUpdate(Article article) {
+        Article dataArticle = getArticle(article.getNo());
+        dataArticle.setHit(dataArticle.getHit() + 1);
+        articleRepository.save(dataArticle);
+        return dataArticle;
+    }
+
+    @Override
+    public Article articleDetail(Article article) {
+        Article detail = articleHitUpdate(article);
+        return detail;
+    }
+
+    @Override
+    public void articleUpdate(Article article) {
+        Optional<Article> articleOptional = articleRepository.findById(article.getNo());
+        Article updateArticle = articleOptional.orElseThrow();
+
+        updateArticle.setTitle(article.getTitle());
+        updateArticle.setContent(article.getContent());
+
+        articleRepository.save(updateArticle);
+    }
+
+    @Override
+    public void articleDelete(Article article) {
+        articleRepository.findById(article.getNo());
+
     }
 }

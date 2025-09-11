@@ -20,7 +20,6 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tbl_todo_generator")
     private Long tno;
-
     private String title;
     private String writer;
     private boolean complete;

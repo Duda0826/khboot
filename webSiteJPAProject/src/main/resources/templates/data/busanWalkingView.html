@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/client/layout/layout}">
+
+
+<!-- 상단 navbar  -->
+<th:block th:fragment="header">
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-2 border-bottom">
+            <a href="/" class="d-flex align-items-center link-body-emphasis text-decoration-none">
+                <span class="fs-4">My Project</span>
+            </a>
+
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/board/boardList">갤러리 게시판</a>
+                <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/article/articleList">자유 게시판</a>
+                <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/data/busanWalkingView">부산도보여행</a>
+            </nav>
+        </div>
+
+        <!-- <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+          <h1 class="display-4 fw-normal text-body-emphasis">Pricing</h1>
+          <p class="fs-5 text-body-secondary">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization.</p>
+        </div> -->
+    </header>
+</th:block>
+
+<th:block layout:fragment="content">
+    <div class="text-center"><h3 class="mb-2">부산도보여행정보 서비스</h3></div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-3" id="item">
+        <div class="col item" id="item-template">
+            <div class="card h-100" >
+                <a href="#" class="item-light"><img class="card-img-top" /></a>
+                <div class="card-body">
+                    <h5 class="card-title item-title"></h5>
+                    <p class="card-text"><small class="text-body-secondary item-type"></small></p>
+                    <p class="card-text item-sub"></p>
+                    <a class="btn btn-primary detailBtn">상세정보</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script>
+        const template = (UC_SEQ, MAIN_TITLE, CATE2_NM, TITLE, MAIN_IMG_THUMB, PLACE) => {
+            const div = document.getElementById('item');
+
+            const template = document.getElementById('item-template');
+            const element = template.cloneNode(true);
+            element.dataset.seq = UC_SEQ;
+            element.removeAttribute('id');
+
+            element.querySelector('a.item-light > img').src = MAIN_IMG_THUMB;
+            element.querySelector('.item-title').textContent += MAIN_TITLE;
+            element.querySelector('.item-type').textContent += CATE2_NM;
+            element.querySelector('.item-sub').textContent += TITLE;
+
+            div.appendChild(element);
+        }
+
+        const url = "/data/busanWalkingList";
+        fetch(url)
+         .then(response => response.json())
+         .then(data => {
+            data.getWalkingKr.item.forEach(function(item) {
+                template(item.UC_SEQ, item.MAIN_TITLE, item.CATE2_NM, item.TITLE, item.MAIN_IMG_THUMB, item.PLACE);
+            })
+         })
+         .catch(error => {
+             alert("정상적으로 데이터를 읽어오지 못하고 있습니다. 잠시후에 다시 시도해 주세요.");
+             console.log(error);
+         });
+
+         // 버큰 클릭했을 때 상세 페이지로 이동
+         document.addEventListener("click", function(e){
+             if (e.target.classList.contains("detailBtn")) {
+                e.preventDefault();
+                const item = e.target.closest("div.item");
+                const seq = item.dataset.seq;
+                //console.log("seq: "+seq);
+                locationProcess(`/data/busanWalkingDetailView/${seq}`);
+            }
+        });
+
+    </script>
+</th:block>

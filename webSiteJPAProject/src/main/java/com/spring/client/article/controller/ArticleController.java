@@ -13,60 +13,58 @@ import java.util.List;
 @RequestMapping("/article")
 @RequiredArgsConstructor
 public class ArticleController {
-
     private final ArticleService articleService;
 
-    // 글 목록 조회
-    @GetMapping("/list")
-    public String listArticles(Model model) {
-        List<Article> articles = articleService.getAllArticles();
-        model.addAttribute("articles", articles);
-        return "article/list";
+    @GetMapping("/articleList")
+    public String articleList(Article article, Model model) {
+        List<Article> articleList = articleService.articleList(article);
+        model.addAttribute("articleList", articleList);
+
+        return "client/article/articleList";
     }
 
-    // 글 상세 조회
-    @GetMapping("/detail/{id}")
-    public String getArticle(@PathVariable("id") Long id, Model model) {
-        Article article = articleService.getArticleById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다. id=" + id));
-        model.addAttribute("article", article);
-        return "article/detail";
+    @GetMapping("insertForm")
+    public String insertForm(Article article){
+        return "client/article/insertForm";
     }
 
-    // 글 작성 폼
-    @GetMapping("/write")
-    public String writeForm(Model model) {
-        model.addAttribute("article", new Article());
-        return "article/write";
+    @PostMapping("/articleInsert")
+    public String articleInsert(Article article){
+        articleService.articleInsert(article);
+        return "redirect:/article/articleList";
     }
 
-    // 글 작성 처리
-    @PostMapping("/write")
-    public String writeArticle(@ModelAttribute Article article) {
-        articleService.saveArticle(article);
-        return "redirect:/article/list";
+    @GetMapping("/{no}")
+    public String articleDetail(@PathVariable Long no, Article article, Model model){
+        article.setNo(no);
+        Article detail = articleService.articleDetail(article);
+        model.addAttribute("detail", detail);
+
+        String newLine = System.getProperty("line.separator").toString();
+        model.addAttribute("newLine", newLine);
+
+        return "client/article/articleDetail";
     }
 
-    // 글 수정 폼
-    @GetMapping("/edit/{id}")
-    public String editForm(@PathVariable("id") Long id, Model model) {
-        Article article = articleService.getArticleById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다. id=" + id));
-        model.addAttribute("article", article);
-        return "article/edit";
+    @PostMapping("/updateForm")
+    public String updateForm(Article article, Model model){
+        Article updateData = articleService.getArticle(article.getNo());
+        model.addAttribute("updateData", updateData);
+        return "client/article/updateForm";
     }
 
-    // 글 수정 처리
-    @PostMapping("/edit")
-    public String editArticle(@ModelAttribute Article article) {
-        articleService.saveArticle(article);
-        return "redirect:/article/detail/" + article.getNo();
+    @PostMapping("/articleUpdate")
+    public String articleUpdate(Article article){
+        Article updateData = articleService.getArticle(article.getNo());
+
+        articleService.articleUpdate(article);
+        return "redirect:/article/" + article.getNo();
     }
 
-    // 글 삭제
-    @GetMapping("/delete/{id}")
-    public String deleteArticle(@PathVariable("id") Long id) {
-        articleService.deleteArticle(id);
-        return "redirect:/article/list";
+    @PostMapping("articleDelete")
+    public String articleDelete(Article article){
+        Article deleteData = articleService.getArticle(article.getNo());
+        articleService.articleDelete(article);
+        return "redirect:/article/articleList";
     }
 }

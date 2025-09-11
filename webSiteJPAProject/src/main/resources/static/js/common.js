@@ -65,3 +65,28 @@ const formFileSubmit = (selector, method, action) => {
     form.action = action;
     form.submit();
 }
+/**
+ * 함수명: getDateFormat
+ * 설명: Date 객체를 'YYYY-MM-DD' 형식으로 반환
+ * 참고
+ * padStart(문자열 길이, [앞쪽에 채울 문자(기본값: 공백" ")]):
+        문자열 앞쪽에 특정 문자를 채워 지정한 길이만큼 맞춰주는 문자열(String) 메서드
+ */
+function getDateFormat(dateValue) {
+    const year = dateValue.getFullYear();
+    const month = String(dateValue.getMonth() + 1).padStart(2, '0');
+    const day = String(dateValue.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+function checkForm(itemSelector, msg) {
+    const input = document.querySelector(itemSelector);
+    if (input.value.trim() === "") {
+        input.placeholder = `${msg} 입력해 주세요.`;
+        input.value = "";
+        input.focus();
+        return false;
+    }
+    return true;
+}

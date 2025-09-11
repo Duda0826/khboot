@@ -20,7 +20,7 @@ public class TodoRepositoryTests {
     private TodoRepository todoRepository;
 
     @Test
-    public void testinsert(){
+    public void testInsert(){
         for(int i = 1; i <= 100; i++){
             Todo todo = Todo.builder()
                     .title("title..." + i)
