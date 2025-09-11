@@ -21,4 +21,18 @@ public class DataServiceImpl implements DataService{
             return "API 호출 중 오류 발생";
         }
     }
+
+    @Override
+    public String busanWalkingDetail(String seq) {
+        try{
+            String baseUrl = "http://apis.data.go.kr/6260000/WalkingService/getWalkingKr";
+            String params = String.format("?serviceKey=%s&pageNo=1&numOfRows=12&resultType=json&UC_SEQ=%s", serviceKey, seq);
+            String site = baseUrl + params;
+
+            OpenApiDTO openApi = new OpenApiDTO(site, "GET");
+            return URLConnectUtil.openAPIData(openApi).toString();
+        }catch (Exception e){
+            return "API 호출 중 오류 발생";
+        }
+    }
 }

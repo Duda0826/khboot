@@ -17,3 +17,6 @@ textarea { resize: none; }
 
 /* clone 대상 적용 스타일*/
 #item-template{display:none;}
+
+/* map 크기 */
+#map{ height: 400px; }

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/client/layout/layout}">
+
+    <th:block layout:fragment="content">
+        <div class="text-center"><h3 class="mb-2">부산도보여행정보 상세정보</h3> </div>
+
+        <div class="container my-5">
+            <div class="p-5 text-center bg-body-tertiary rounded-3">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div id="detailData">
+            <div class="card">
+                <h5 class="card-header item-title"></h5>
+                <div class="card-body">
+                    <p class="card-text item-content"></p>
+                </div>
+
+                <table class="table">
+                    <tbody class="detail-content">
+                        <tr class="item">
+                            <td class="detail-title col-md-2">분류</td>
+                            <td class="item-type col-md-10"></td>
+                        </tr>
+                        <tr class="item">
+                            <td class="detail-title">간략한 설명</td>
+                            <td class="item-sub"></td>
+                        </tr>
+                        <tr class="item">
+                            <td class="detail-place">장소</td>
+                            <td class="item-place"></td>
+                        </tr>
+                        <tr class="item">
+                            <td class="detail-title">교통정보</td>
+                            <td class="item-trfc"></td>
+                        </tr>
+                        <tr class="item">
+                            <td class="item">기타정보</td>
+                            <td class="item-middle"></td>
+                        </tr>
+                        <tr class="item">
+                            <td class="detail-title text-center" colspan="2">
+                                <img class="item-img" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-end mt-2">
+            <button type="button" class="btn btn-primary" id="listBtn">목록</button>
+        </div>
+    </th:block>
+
+    <th:block layout:fragment="script">
+        <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=76e386c9deae0f46eea7c6970d758fa4"></script>
+
+        <script th:inline="javascript">
+            const template = (result) => {
+                document.querySelector('.item-title').textContent = result.MAIN_TITLE;
+                const content = result.ITEMCNTNTS.replace(/(\r\n|\r|\n)/g, "<br />");
+                document.querySelector('.item-content').innerHTML = content;
+                document.querySelector('.item-type').textContent += result.CATE2_NM;
+                document.querySelector('.item-sub').textContent += result.SUBTITLE;
+                document.querySelector('.item-place').textContent += result.PLACE;
+                document.querySelector('.item-trfc').textContent += result.TRFC_INFO;
+                document.querySelector('.item-middle').textContent += result.MIDDLE_SIZE_RM1;
+                document.querySelector('.item-img').src = result.MAIN_IMG_NORMAL;
+                document.querySelector('.item-img').alt = result.TITLE;
+            }
+
+            const seq = /*[[${seq}]]*/"";
+            fetch(`/data/busanWalkingDetail/${seq}`)
+            .then(response => response.json())
+            .then(data => {
+                initMap(data.getWalkingKr.item[0].LAT, data.getWalkingKr.item[0].LNG);
+                template(data.getWalkingKr.item[0]);
+            })
+            .catch(error => {
+                alert("정상적으로 데이터를 읽어오지 못하고 있습니다. 잠시후에 다시 시도해 주세요.");
+                console.log(error);
+            });
+
+            document.getElementById("listBtn").addEventListener("click", function() {
+                locationProcess("/data/busanWalkingView");
+            });
+
+            function initMap(lat, lng){
+                const container = document.getElementById('map');
+
+                const options = {
+                    center: new kakao.maps.LatLng(lat, lng),
+                    level: 7
+                };
+
+                const map = new kakao.maps.Map(container, options);
+
+                let mapTypeControl = new kakao.maps.MapTypeControl();
+                map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+                let zoomControl = new kakao.maps.ZoomControl();
+                map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+                let marker = new kakao.maps.Marker({
+                    position: map.getCenter()
+                });
+                marker.setMap(map);
+            }
+
+        </script>
+    </th:block>
+</html>
