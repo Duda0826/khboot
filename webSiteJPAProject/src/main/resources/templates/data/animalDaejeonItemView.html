@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/client/layout/layout}">
+
+<th:block layout:fragment="content">
+    <div class="text-center"><h3 class="mb-2">대전 유기동물 공고현황 상세정보</h3></div>
+
+    <div id="list">
+        <div class="container py-4">
+            <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+                <img class="item-image rounded" width="1200" height="628"/>
+            </div>
+
+            <div class="row align-items-md-stretch">
+                <div class="col-md-6">
+                    <div class="h-100 p-5 text-bg-dark rounded-3">
+                        <h2 class="item-heading-species"></h2>
+                        <p class="item-age"></p>
+                        <p class="item-color"></p>
+                        <p class="item-weight"></p>
+                        <!-- <button class="btn btn-outline-light" type="button">원본이미지 보기</button> -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="h-100 p-5 bg-body-tertiary border rounded-3">
+                        <h2 class="item-heading-status"></h2>
+                        <p class="item-rescueDate"></p>
+                        <p class="item-place"></p>
+                        <p class="item-memo"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="searchData">
+        <input type="hidden" name="searchCondition" id="searchCondition" th:value="${animalDaejeonDTO.searchCondition}" />
+        <input type="hidden" name="searchCondition3" id="searchCondition3" th:value="${animalDaejeonDTO.searchCondition3}"/>
+    </form>
+
+    <div class="text-end mt-2">
+        <button type="button" class="btn btn-primary" id="animalDaejeonListBtn">목록</button>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        const  adoptionStatusCdArray =  ["", "공고중", "입양가능", "입양예정", "입양완료", "자연사", "안락사", "주인반환", "임시보호", "입양불가", "방사", "주민참여", "입원중"];
+
+        const template = (result) => {
+            // animalSeq, adoptionStatusCd, adoptionStatusCdString, age, filePath, species, hairColor, memo, foundPlace, classification, rescueDate, weight
+            const getText = (tag) => result.getElementsByTagName(tag)[0]?.textContent || "";
+
+            const img = `http://www.daejeon.go.kr/${getText('filePath')}`;
+            document.querySelector('.item-image').src = img;
+            console.log(result);
+
+            document.querySelector('.item-heading-species').textContent = getText("species");
+            document.querySelector('.item-age').textContent = getText("age");
+            document.querySelector('.item-color').textContent = getText("hairColor");
+            document.querySelector('.item-weight').textContent = getText("weight");
+            document.querySelector('.item-memo').textContent = getText("memo");
+
+            document.querySelector('.item-heading-status').textContent = adoptionStatusCdArray[getText("adoptionStatusCd")];
+            document.querySelector('.item-rescueDate').textContent = getText("rescueDate");
+            document.querySelector('.item-place').textContent = getText("foundPlace");
+        }
+
+        const animalSeq = /*[[${animalSeq}]]*/"";
+
+        fetch('/data/animalDaejeonItem', {
+            method:'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                animalSeq: animalSeq
+            })
+        })
+        .then(response => response.text())
+        .then(data => {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(data, "application/xml");
+            template(xml);
+        })
+        .catch(error => {
+            alert("정상적으로 데이터를 읽어오지 못하고 있습니다. 잠시후에 다시 시도해 주세요.");
+            console.log(error);
+        });
+
+        document.getElementById("animalDaejeonListBtn").addEventListener("click", () => {
+            formSubmit("searchData", "get", "/data/animalDaejeonView");
+        });
+    </script>
+</th:block>

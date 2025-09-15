@@ -18,12 +18,20 @@
             </thead>
             <tbody>
             <tr th:if="${#lists.size(articleList)==0}">
-                <td colspan="4" class="text-center">등록된 게시물이 존재하지 않습니다.</td>
+                <td colspan="5" class="text-center">등록된 게시물이 존재하지 않습니다.</td>
             </tr>
             <th:block th:if="${not #strings.isEmpty(articleList)}">
                 <tr class="text-center" th:each="article : ${articleList}" th:object="${article}"  th:data-no="*{no}">
                     <th scope="row" th:text="*{no}"></th>
-                    <td class="text-start"><a th:href="@{/article/} + *{no}" th:text="*{title}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"></a></td>
+                    <!--/*<td class="text-start"><a th:href="@{/article/} + *{no}" th:text="*{title}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover"></a></td>*/-->
+                    <td class="text-start">
+                        <a th:href="@{/article/} + *{no}" class="link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">
+                            <span th:text="*{title}"></span>
+                            <th:block th:if="*{comments.size() > 0}">
+                                <span class="reply-count" th:text="*{'[' + comments.size() + ']'}"></span>
+                            </th:block>
+                        </a>
+                    </td>
                     <td th:text="*{name}"></td>
                     <td th:text="*{#temporals.format(regDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td th:text="*{hit}"></td>

@@ -20,3 +20,5 @@ textarea { resize: none; }
 
 /* map 크기 */
 #map{ height: 400px; }
+
+#media-template{ display:none;}

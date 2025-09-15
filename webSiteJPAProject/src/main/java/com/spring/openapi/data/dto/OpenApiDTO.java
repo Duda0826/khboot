@@ -1,4 +1,4 @@
-package com.spring.common.openapi.data.dto;
+package com.spring.openapi.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

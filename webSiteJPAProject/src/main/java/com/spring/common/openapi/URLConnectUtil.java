@@ -1,6 +1,6 @@
 package com.spring.common.openapi;
 
-import com.spring.common.openapi.data.dto.OpenApiDTO;
+import com.spring.openapi.data.dto.OpenApiDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template/client/layout/layout}">
+
+<th:block layout:fragment="content">
+    <div class="text-center"><h3 class="mb-2">대전 유기동물 공고</h3></div>
+
+    <div class="mb-2">
+        <form id="animalSearch" th:object="${animalDaejeonDTO}">
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <label for="searchCondition">유기동물구분</label>
+                </div>
+                <div class="col-auto">
+                    <select th:field="*{searchCondition}" class="form-select form-select-sm" aria-label="Small select example">
+                        <option value="1" selected>개</option>
+                        <option value="2">고양이</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <label for="searchCondition3">입양상태</label>
+                </div>
+                <div class="col-auto">
+                    <select th:field="*{searchCondition3}" class="form-select form-select-sm" aria-label="Small select example">
+                        <option value="1" selected>공고중</option>
+                        <option value="2">입양가능</option>
+                        <option value="3">입양예정</option>
+                        <option value="4">입양완료</option>
+                        <option value="7">주인반환</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row mb-2" id="list">
+        <div class="col-md-6" id="media-template">
+            <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary-emphasis item-place"></strong>
+                    <h3 class="mb-0 item-heading"></h3>
+                    <div class="mb-1 text-body-secondary item-color"></div>
+                    <p class="card-text mb-auto item-memo"></p>
+                    <a class="icon-link gap-1 icon-link-hover detailBtn">
+                        Continue reading
+                    </a>
+                </div>
+                <div class="col-auto d-none d-lg-block">
+                    <img class="media-object rounded" width="200" height="250" />
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script>
+        const template = (animalSeq, age, filePath, species, hairColor, memo, foundPlace, classification) => {
+            const div = document.getElementById('list');
+            const media = document.getElementById('media-template');
+            const element = media.cloneNode(true);
+            element.removeAttribute('id');
+
+            element.dataset.seq = animalSeq;
+            element.classList.add('animal-list');
+
+            let img = "";
+            if(filePath !== ""){
+                img = `http://www.daejeon.go.kr/${filePath}`;
+                element.querySelector('.media-object').src = img;
+            } else {
+                img = `/image/noanimal${classification}.png`;
+                // classification = 1 => noanimal1.png / classification = 2 => noanimal2.png
+                element.querySelector('.media-object').src = img;  // 이미지 존재하지 않을 때 보여줄 이미지
+            }
+
+            element.querySelector('.item-place').textContent = foundPlace;
+            element.querySelector('.item-heading').textContent = `${species} - ${age}`;
+            element.querySelector('.item-color').textContent = hairColor;
+            element.querySelector('.item-memo').textContent = memo;
+
+            div.appendChild(element);
+        }
+
+
+        const animalList = () => {
+             document.querySelectorAll(".animal-list").forEach(el => el.remove());
+
+            fetch('/data/animalDaejeonList', {
+                method:'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    searchCondition: document.getElementById('searchCondition').value,
+                    searchCondition3: document.getElementById('searchCondition3').value
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(data, "application/xml");
+
+                console.log(xml);
+
+                const items = xml.getElementsByTagName('items');
+                for(let item of items) {
+                    const getText = (tag) => item.getElementsByTagName(tag)[0]?.textContent || "";
+                    const animalSeq = getText("animalSeq");
+                    const age = getText("age");
+                    const filePath = getText("filePath");
+                    const hairColor = getText("hairColor");
+                    const memo = getText("memo");
+                    const species = getText("species");
+                    const foundPlace = getText("foundPlace");
+                    const classification = getText("classification");
+
+                    template(animalSeq, age, filePath, species, hairColor, memo, foundPlace, classification);
+                }
+            })
+            .catch(error => {
+                alert("정상적으로 데이터를 읽어오지 못하고 있습니다. 잠시후에 다시 시도해 주세요.");
+                console.log(error);
+            });
+        };
+
+        animalList();
+
+        document.querySelector('#searchCondition').addEventListener('change', animalList);
+        document.querySelector('#searchCondition3').addEventListener('change', animalList);
+
+        // 버큰 클릭했을 때 상세 페이지로 이동
+        document.addEventListener('click', function(e){
+            if (e.target.classList.contains("detailBtn")) {
+                e.preventDefault();
+                const animal = e.target.closest("div.animal-list");
+                const animalSeq = animal.dataset.seq;
+                locationProcess(`/data/animalDaejeonItemView/${animalSeq}`);
+            }
+        });
+    </script>
+</th:block>
+
+</html>
