@@ -5,6 +5,7 @@ import com.spring.common.dto.PageResponseDTO;
 import com.spring.mallapi.todo.dto.TodoDTO;
 import com.spring.mallapi.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,7 +22,8 @@ public class TodoController {
     }
 
     @GetMapping("/list")
-    public PageResponseDTO<TodoDTO> list(PageRequestDTO pageRequestDTO){
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")  // 임시 권한 설정
+    public PageResponseDTO<TodoDTO> list(PageRequestDTO pageRequestDTO ) {
         return todoService.list(pageRequestDTO);
     }
 
