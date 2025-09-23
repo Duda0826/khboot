@@ -6,7 +6,7 @@ public class CustomJWTException extends RuntimeException {
   @Serial
   private static final long serialVersionUID = 1L;
 
-    public CustomJWTException(String msg) {
-      super(msg);
-    }
+  public CustomJWTException(String msg) {
+    super(msg);
+  }
 }

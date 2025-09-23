@@ -2,7 +2,6 @@ package com.spring.mallapi.config;
 
 import java.util.Arrays;
 
-import com.spring.mallapi.security.filter.JWTCheckFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,8 +15,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.spring.mallapi.security.filter.JWTCheckFilter;
 import com.spring.mallapi.security.handler.APILoginFailHandler;
 import com.spring.mallapi.security.handler.APILoginSuccessHandler;
+import com.spring.mallapi.security.handler.CustomAccessDeniedHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,14 +45,20 @@ public class CustomSecurityConfig {
         http.formLogin(config -> {
             config.loginPage("/api/member/login");
             config.successHandler(new APILoginSuccessHandler());
-            config.failureHandler(new APILoginFailHandler());  // 추가
+            config.failureHandler(new APILoginFailHandler());
         });
 
         /* JWT 체크 추가 */
         http.addFilterBefore(new JWTCheckFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        /* 접근제한 시 CustomAccessDeniedHandler를 활용하도록 설정 */
+        http.exceptionHandling(config -> {
+            config.accessDeniedHandler(new CustomAccessDeniedHandler());
+        });
+
         return http.build();
     }
+
 
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
