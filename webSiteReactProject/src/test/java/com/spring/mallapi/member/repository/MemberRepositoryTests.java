@@ -17,6 +17,7 @@ public class MemberRepositoryTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Test
     public void testInsertMember() {
         for(int i = 0; i < 10; i++){
